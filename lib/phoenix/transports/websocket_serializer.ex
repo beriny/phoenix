@@ -38,13 +38,13 @@ defmodule Phoenix.Transports.WebSocketSerializer do
   """
   def decode!(message, _opts) do
     message
-    |> Poison.decode!()
+    |> Jason.decode!()
     |> Phoenix.Socket.Message.from_map!()
   end
 
   defp encode_v1_fields_only(%Message{} = msg) do
     msg
     |> Map.take([:topic, :event, :payload, :ref])
-    |> Poison.encode_to_iodata!()
+    |> Jason.encode_to_iodata!()
   end
 end

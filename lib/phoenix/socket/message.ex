@@ -12,6 +12,7 @@ defmodule Phoenix.Socket.Message do
   """
 
   @type t :: %Phoenix.Socket.Message{}
+  @derive Jason.Encoder
   defstruct topic: nil, event: nil, payload: nil, ref: nil, join_ref: nil
 
   @doc """

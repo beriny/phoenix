@@ -265,7 +265,7 @@ defmodule Phoenix.Controller do
 
   defp get_json_encoder do
     Application.get_env(:phoenix, :format_encoders)
-    |> Keyword.get(:json, Poison)
+    |> Keyword.get(:json, Jason)
   end
 
   @doc """

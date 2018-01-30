@@ -40,7 +40,7 @@ defmodule Phoenix.Transports.LongPollSerializer do
   """
   def decode!(message, _opts) do
     message
-    |> Poison.decode!()
+    |> Jason.decode!()
     |> Phoenix.Socket.Message.from_map!()
   end
 end
