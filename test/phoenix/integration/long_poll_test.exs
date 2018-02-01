@@ -151,11 +151,11 @@ defmodule Phoenix.Integration.LongPollTest do
   end
   defp decode_body(_vsn, %{body: ""} = resp), do: resp
   defp decode_body("1." <> _, %{} = resp) do
-    put_in(resp, [:body], Jason.decode!(resp.body))
+    put_in(resp, [:body], Phoenix.json().decode!(resp.body))
   end
   defp decode_body("2." <> _, %{} = resp) do
     resp
-    |> put_in([:body], Jason.decode!(resp.body))
+    |> put_in([:body], Phoenix.json().decode!(resp.body))
     |> update_in([:body, "messages"], fn
       nil -> []
       messages ->
@@ -167,19 +167,19 @@ defmodule Phoenix.Integration.LongPollTest do
     end)
   end
   defp decode_body(_invalid, %{} = resp) do
-    put_in(resp, [:body], Jason.decode!(resp.body))
+    put_in(resp, [:body], Phoenix.json().decode!(resp.body))
   end
   def stringify(struct) do
     struct
     |> Map.from_struct()
-    |> Jason.encode!()
-    |> Jason.decode!()
+    |> Phoenix.json().encode!()
+    |> Phoenix.json().decode!()
   end
 
   defp encode(_vsn, nil), do: ""
-  defp encode("1." <> _ = _vsn, map), do: Jason.encode!(map)
+  defp encode("1." <> _ = _vsn, map), do: Phoenix.json().encode!(map)
   defp encode("2." <> _ = _vsn, map) do
-    Jason.encode!(
+    Phoenix.json().encode!(
       [map["join_ref"], map["ref"], map["topic"], map["event"], map["payload"]])
   end
   defp encode(_, map), do: encode("1.0.0", map)
@@ -234,7 +234,7 @@ defmodule Phoenix.Integration.LongPollTest do
       resp = poll(:get, "/ws", @vsn, session)
       assert resp.body["status"] == 200
 
-      [status_msg, phx_reply, user_entered] = Enum.sort(resp.body["messages"])
+      [phx_reply, user_entered, status_msg] = resp.body["messages"]
 
       assert phx_reply ==
         %{"event" => "phx_reply",

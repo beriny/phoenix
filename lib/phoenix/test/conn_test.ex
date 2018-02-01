@@ -407,10 +407,8 @@ defmodule Phoenix.ConnTest do
   def json_response(conn, status) do
     body = response(conn, status)
     _    = response_content_type(conn, :json)
-    case Jason.decode(body) do
-      {:ok, body} -> body
-      {:error, %Jason.DecodeError{} = err} -> raise(err)
-    end
+
+    Phoenix.json().decode!(body)
   end
 
   @doc """
